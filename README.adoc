@@ -1,0 +1,3 @@
+= go-argsfile
+
+Go package to work with the args file format.
