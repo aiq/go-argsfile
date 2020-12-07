@@ -2,4 +2,15 @@
 
 Go package to work with the args file format.
 
-API Documentation: https://godoc.org/github.com/aiq/go-argsfile
+== API Documentation
+
+https://godoc.org/github.com/aiq/go-argsfile
+
+== testapp
+
+You can use the testapp to test the behaviour of _argsfile.Args()_.
+
+----
+$ cd testdata
+$ go run ../bin/testapp.go
+----
