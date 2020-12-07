@@ -8,7 +8,7 @@ https://godoc.org/github.com/aiq/go-argsfile
 
 == testapp
 
-You can use the testapp to test the behaviour of _argsfile.Args()_.
+You can use the testapp to play with the behaviour of _argsfile.Args()_.
 
 ----
 $ cd testdata
