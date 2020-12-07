@@ -129,7 +129,6 @@ func fullWorkflow(osArgs []string) (args []string, err error) {
 	if len(dirfiles.DefArgs) > 0 && !hasNoArgs && !hasNoAutoArgs {
 		args = append(args, "--args", dirfiles.DefArgs)
 		args = append(args, input[1:]...)
-		fmt.Println(args)
 		return ExpandArgs(args)
 	} else if len(dirfiles.ArgsFiles) > 0 && !hasNoArgs {
 		file, err := selectArgsFile(dirfiles.ArgsFiles)
