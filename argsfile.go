@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -102,7 +103,7 @@ func selectArgsFile(files []string) (f string, err error) {
 	if err != nil {
 		return "", err
 	}
-	num, err := strconv.Atoi(numStr)
+	num, err := strconv.Atoi(strings.TrimSpace(numStr))
 	if err != nil {
 		return "", err
 	}
@@ -115,26 +116,28 @@ func selectArgsFile(files []string) (f string, err error) {
 }
 
 func fullWorkflow(osArgs []string) (args []string, err error) {
-	args, err = ExpandArgs(osArgs)
+	input, err := ExpandArgs(osArgs)
 	if err == nil || err != NoArgs {
 		return args, err
 	}
 
-	appname := args[0]
-	args, hasNoAutoArgs := PullNoAutoArgs(args)
-	args, hasNoArgs := PullNoArgs(args)
-	dirfiles, err := GetDirFiles(appname)
+	appname := input[0]
+	input, hasNoAutoArgs := PullNoAutoArgs(input)
+	input, hasNoArgs := PullNoArgs(input)
+	dirfiles, err := GetDirFiles(path.Base(appname))
+	args = []string{appname}
 	if len(dirfiles.DefArgs) > 0 && !hasNoArgs && !hasNoAutoArgs {
-		args = append([]string{appname}, "--args", dirfiles.DefArgs)
-		args = append(args, args[1:]...)
+		args = append(args, "--args", dirfiles.DefArgs)
+		args = append(args, input[1:]...)
+		fmt.Println(args)
 		return ExpandArgs(args)
 	} else if len(dirfiles.ArgsFiles) > 0 && !hasNoArgs {
 		file, err := selectArgsFile(dirfiles.ArgsFiles)
 		if err != nil {
 			return args, err
 		}
-		args = append([]string{appname}, "--args", file)
-		args = append(args, args[1:]...)
+		args = append(args, "--args", file)
+		args = append(args, input[1:]...)
 		return ExpandArgs(args)
 	}
 
@@ -190,7 +193,8 @@ func ExpandArgs(args []string) (expanded []string, err error) {
 		return args, fmt.Errorf("missing --args filepath value")
 	}
 
-	expanded = args[:idx]
+	expanded = make([]string, idx)
+	copy(expanded, args[:idx])
 	{
 		inserted, err := ReadFile(args[idx+1])
 		if err != nil {
